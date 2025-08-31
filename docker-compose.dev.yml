@@ -1,0 +1,107 @@
+version: '3.8'
+
+services:
+
+  app:
+    build:
+      dockerfile: app/Dockerfile.dev
+    container_name: ${PROJECT_NAME}_app
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - app_data:/var/www/html/var
+      - ./app/src:/var/www/html
+      - ./docs:/opt/docs
+      - ./app/config/php/dev/xdebug.ini:/usr/local/etc/php/conf.d/99-xdebug.ini
+      - ./app/config/supervisor/php-fpm.conf:/etc/supervisor/conf.d/php-fpm.conf
+    links:
+      - postgres
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    environment:
+      PHP_IDE_CONFIG: "serverName=locations"
+      DATABASE_URL: ${DATABASE_URL}
+      ASYNC_TRANSPORT_DSN: ${ASYNC_TRANSPORT_DSN}
+      ASYNC_QUEUE: ${ASYNC_QUEUE}
+      FAILED_TRANSPORT_DSN: ${FAILED_TRANSPORT_DSN}
+      FAILED_QUEUE: ${FAILED_QUEUE}
+      BULK_TRANSPORT_DSN: ${BULK_TRANSPORT_DSN}
+      BULK_QUEUE: ${BULK_QUEUE}
+      MEDIATOR_ASYNC_TRANSPORT_DSN: ${MEDIATOR_ASYNC_TRANSPORT_DSN}
+      MEDIATOR_ASYNC_QUEUE: ${MEDIATOR_ASYNC_QUEUE}
+    networks:
+      - locations
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: ${PROJECT_NAME}_postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - TZ=UTC
+      - POSTGRES_USER=${POSTGRES_USER:-user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
+      - POSTGRES_DB=${POSTGRES_DB:-app}
+    ports:
+      - ${POSTGRES_EXTERNAL_PORT:-5432}:5432
+    restart: unless-stopped
+    networks:
+      - locations
+
+  nginx:
+    image: nginx:alpine
+    container_name: ${PROJECT_NAME}_nginx
+    ports:
+      - ${NGINX_PORT:-80}:${NGINX_PORT:-80}
+    volumes:
+      - ./app/src:/var/www/html
+      - ./nginx/templates:/etc/nginx/templates
+    environment:
+      - NGINX_PORT=${NGINX_PORT:-80}
+      - NGINX_HOST=$NGINX_HOST
+      - NGINX_PASS=$NGINX_PASS
+    depends_on:
+      - app
+    restart: unless-stopped
+    networks:
+      - locations
+
+  rabbitmq:
+    image: rabbitmq:4.0-management-alpine
+    container_name: ${PROJECT_NAME}_rabbitmq
+    environment:
+      TZ: UTC
+      RABBITMQ_ERLANG_COOKIE: $RABBITMQ_ERLANG_COOKIE
+      RABBITMQ_DEFAULT_USER: $RABBITMQ_DEFAULT_USER
+      RABBITMQ_DEFAULT_PASS: $RABBITMQ_DEFAULT_PASS
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    ports:
+      - ${RABBITMQ_EXTERNAL_PORT:-5675}:5672
+      - ${RABBITMQ_GUI_EXTERNAL_PORT:-15672}:15672
+    restart: unless-stopped
+    networks:
+      - locations
+
+  redis:
+    image: redis:alpine
+    container_name: ${PROJECT_NAME}_redis
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    environment:
+      TZ: UTC
+    restart: unless-stopped
+    networks:
+      - locations
+
+volumes:
+  rabbitmq_data:
+  postgres_data:
+  app_data:
+  redis_data:
+
+networks:
+  locations:
+    driver: bridge

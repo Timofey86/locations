@@ -1,0 +1,138 @@
+framework:
+    messenger:
+        # Uncomment this (and the failed transport below) to send failed messages to this transport for later handling.
+        failure_transport: totally_failed
+
+        serializer:
+            default_serializer: 'App\Infrastructure\Serializer\TransportSerializer'
+            symfony_serializer:
+                format: json
+                context: { }
+
+        transports:
+            sync: 'sync://'
+            async:
+                dsn: '%async_transport_dsn%'
+                failure_transport: failed
+                options:
+                    persistent: true
+                    exchange:
+                        name: '%async_queue%'
+                    queues:
+                        '%async_queue%': ~
+                retry_strategy:
+                    max_retries: 0
+            bulk:
+                dsn: '%bulk_transport_dsn%'
+                failure_transport: failed
+                options:
+                    persistent: true
+                    exchange:
+                        name: '%bulk_queue%'
+                    queues:
+                        '%bulk_queue%': ~
+                retry_strategy:
+                    max_retries: 0
+            mediator_async:
+                dsn: '%mediator_async_transport_dsn%'
+                failure_transport: failed
+                options:
+                    persistent: true
+                    exchange:
+                        name: '%mediator_async_queue%'
+                    queues:
+                        '%mediator_async_queue%': ~
+                retry_strategy:
+                    max_retries: 0
+            failed:
+                dsn: '%failed_transport_dsn%'
+                options:
+                    persistent: true
+                    exchange:
+                        name: '%failed_queue%'
+                    queues:
+                        '%failed_queue%': ~
+                retry_strategy:
+                    max_retries: 3
+            totally_failed: 'doctrine://default?queue_name=failed'
+
+        routing:
+            App\Domain\Shared\Command\SyncCommandInterface: sync
+            App\Domain\Shared\Command\AsyncCommandInterface: async
+            App\Domain\Shared\Command\BulkCommandInterface: bulk
+            App\Domain\Shared\Command\MediatorAsyncCommandInterface: mediator_async
+
+        default_bus: messenger.bus.commands
+        buses:
+            mediator.messenger.bus.commands:
+                default_middleware:
+                    enabled: true
+                    allow_no_handlers: false
+                    allow_no_senders: true
+
+                middleware:
+                    - 'App\Infrastructure\Queue\Middleware\LoggingMiddleware'
+                    - 'App\Infrastructure\Queue\Middleware\TotallyFailedMiddleware'
+                    - doctrine_ping_connection
+                    - doctrine_close_connection
+                    - doctrine_transaction
+                    - 'App\Infrastructure\Queue\Middleware\ValidationMiddleware'
+
+            messenger.bus.commands:
+                default_middleware:
+                    enabled: true
+                    allow_no_handlers: false
+                    allow_no_senders: true
+
+                middleware:
+                    - 'App\Infrastructure\Queue\Middleware\LoggingMiddleware'
+                    - 'App\Infrastructure\Queue\Middleware\TotallyFailedMiddleware'
+                    - doctrine_ping_connection
+                    - doctrine_close_connection
+                    - doctrine_transaction
+                    - 'App\Infrastructure\Queue\Middleware\ValidationMiddleware'
+
+            messenger.bus.queries:
+                default_middleware:
+                    enabled: true
+                    allow_no_handlers: false
+                    allow_no_senders: true
+
+                middleware:
+                    - doctrine_ping_connection
+                    - doctrine_close_connection
+                    - doctrine_transaction
+
+            messenger.bus.events:
+                default_middleware:
+                    enabled: true
+                    allow_no_handlers: true
+                    allow_no_senders: true
+
+                middleware:
+                    - doctrine_ping_connection
+                    - doctrine_close_connection
+                    - doctrine_transaction
+
+when@test:
+    framework:
+        messenger:
+            buses:
+                messenger.bus.events:
+                    default_middleware:
+                        enabled: true
+                        allow_no_handlers: true
+                        allow_no_senders: true
+
+                    middleware:
+                        - doctrine_ping_connection
+                        - doctrine_close_connection
+                        - doctrine_transaction
+                        - 'App\Infrastructure\Queue\Middleware\MessageNameLoggingMiddleware'
+
+            transports:
+                # replace with your transport name here (e.g., my_transport: 'in-memory://')
+                # For more Messenger testing tools, see https://github.com/zenstruck/messenger-test
+                async: 'sync://'
+                bulk: 'sync://'
+                mediator_async: 'in-memory://'

@@ -1,0 +1,38 @@
+FROM php:8.4-fpm-alpine
+
+ENV APP_ENV=dev
+WORKDIR /var/www/html
+
+# PHP и PECL зависимости
+RUN apk add --no-cache \
+        bash \
+        git \
+        unzip \
+        zip \
+        libzip-dev \
+        libpng-dev \
+        libjpeg-turbo-dev \
+        freetype-dev \
+        libssh2 \
+        libssh2-dev \
+        supervisor \
+        postgresql-dev \
+        rabbitmq-c-dev \
+        autoconf \
+        make \
+        gcc \
+        g++ \
+        musl-dev \
+        linux-headers \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo_pgsql gd zip \
+    && pecl install xdebug amqp ssh2 \
+    && docker-php-ext-enable xdebug amqp ssh2
+
+RUN pecl install swoole-6.0.0 \
+    && docker-php-ext-enable swoole
+
+# Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+EXPOSE 9000

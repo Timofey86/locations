@@ -1,0 +1,54 @@
+services:
+
+  worker:
+    build:
+      dockerfile: app/Dockerfile.dev
+    tty: true
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./app/src:/var/www/html
+      - var_data:/var/www/html/var
+      - ./app/config/php/dev/xdebug.ini:/usr/local/etc/php/conf.d/99-xdebug.ini
+      - ./app/config/supervisor/worker.conf:/etc/supervisor/conf.d/worker.conf
+    environment:
+      PHP_IDE_CONFIG: "serverName=locations"
+      DATABASE_URL: ${DATABASE_URL}
+      ASYNC_TRANSPORT_DSN: ${ASYNC_TRANSPORT_DSN}
+      ASYNC_QUEUE: ${ASYNC_QUEUE}
+      FAILED_TRANSPORT_DSN: ${FAILED_TRANSPORT_DSN}
+      FAILED_QUEUE: ${FAILED_QUEUE}
+      MEDIATOR_ASYNC_TRANSPORT_DSN: ${MEDIATOR_ASYNC_TRANSPORT_DSN}
+      MEDIATOR_ASYNC_QUEUE: ${MEDIATOR_ASYNC_QUEUE}
+    restart: always
+    networks:
+      - locations
+
+  worker_failed:
+    build:
+      dockerfile: app/Dockerfile.dev
+    tty: true
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./app/src:/var/www/html
+      - ./app/config/php/dev/xdebug.ini:/usr/local/etc/php/conf.d/99-xdebug.ini
+      - ./app/config/supervisor/worker-failed.conf:/etc/supervisor/conf.d/worker-failed.conf
+    environment:
+      PHP_IDE_CONFIG: "serverName=locations"
+      DATABASE_URL: ${DATABASE_URL}
+      ASYNC_TRANSPORT_DSN: ${ASYNC_TRANSPORT_DSN}
+      ASYNC_QUEUE: ${ASYNC_QUEUE}
+      FAILED_TRANSPORT_DSN: ${FAILED_TRANSPORT_DSN}
+      FAILED_QUEUE: ${FAILED_QUEUE}
+      MEDIATOR_ASYNC_TRANSPORT_DSN: ${MEDIATOR_ASYNC_TRANSPORT_DSN}
+      MEDIATOR_ASYNC_QUEUE: ${MEDIATOR_ASYNC_QUEUE}
+    restart: always
+    networks:
+      - locations
+
+volumes:
+  var_data:
+
+networks:
+  locations:

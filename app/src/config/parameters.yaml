@@ -1,0 +1,9 @@
+parameters:
+    mq_host: rabbitmq
+    mq_port: 5672
+    mq_user: '${RABBITMQ_DEFAULT_USER}'
+    mq_pass: '${RABBITMQ_DEFAULT_PASS}'
+    mq_incoming_queue: '${RABBITMQ_INCOMING_QUEUE}'
+    mq_incoming_exchange: '${RABBITMQ_INCOMING_EXCHANGE}'
+    mq_internal_queue: '${RABBITMQ_INTERNAL_QUEUE}'
+    mq_internal_exchange: '${RABBITMQ_INTERNAL_EXCHANGE}'

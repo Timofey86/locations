@@ -1,0 +1,101 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+parameters:
+    async_transport_dsn: '%env(resolve:ASYNC_TRANSPORT_DSN)%'
+    async_queue: '%env(string:ASYNC_QUEUE)%'
+    failed_transport_dsn: '%env(resolve:FAILED_TRANSPORT_DSN)%'
+    failed_queue: '%env(string:FAILED_QUEUE)%'
+    bulk_transport_dsn: '%env(resolve:BULK_TRANSPORT_DSN)%'
+    bulk_queue: '%env(string:BULK_QUEUE)%'
+    mediator_async_transport_dsn: '%env(resolve:MEDIATOR_ASYNC_TRANSPORT_DSN)%'
+    mediator_async_queue: '%env(string:MEDIATOR_ASYNC_QUEUE)%'
+    mcc_mnc_csv_url: 'https://raw.githubusercontent.com/musalbas/mcc-mnc-table/master/mcc-mnc-table.csv'
+    mnp_url: 'https://update.mysmpp.ru/tmp/'
+    mnp_sftp_host: '%env(MNP_SFTP_HOST)%'
+    mnp_sftp_port: '%env(MNP_SFTP_PORT)%'
+    mnp_sftp_user: '%env(MNP_SFTP_USER)%'
+    mnp_sftp_pass: '%env(MNP_SFTP_PASS)%'
+    mnp_user: '%env(MNP_USER)%'
+    mnp_pass: '%env(MNP_PASS)%'
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+        bind:
+            $queryBus: '@messenger.bus.queries'
+            $commandBus: '@messenger.bus.commands'
+            $eventBus: '@messenger.bus.events'
+            $mediatorCommandBus: '@mediator.messenger.bus.commands'
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+    Money\Currencies\ISOCurrencies: ~
+    Money\Currencies: '@Money\Currencies\ISOCurrencies'
+
+    Money\Formatter\DecimalMoneyFormatter: ~
+    Money\MoneyFormatter: '@Money\Formatter\DecimalMoneyFormatter'
+
+    App\Infrastructure\Logger\ExtraRequestDataProcessor:
+        tags:
+            - { name: monolog.processor, channel: request }
+
+    _instanceof:
+
+        App\Domain\Shared\Command\MediatorCommandHandlerInterface:
+            tags: [{ name: messenger.message_handler, bus: mediator.messenger.bus.commands }]
+
+        App\Domain\Shared\Command\CommandHandlerInterface:
+            tags: [ { name: messenger.message_handler, bus: messenger.bus.commands } ]
+
+        App\Domain\Shared\Query\QueryHandlerInterface:
+            tags: [ { name: messenger.message_handler, bus: messenger.bus.queries } ]
+
+        App\Domain\Shared\Event\EventHandlerInterface:
+            tags: [ { name: messenger.message_handler, bus: messenger.bus.events } ]
+
+    gedmo.mapping.driver.attribute:
+        class: Gedmo\Mapping\Driver\AttributeReader
+    gedmo.listener.softdeleteable:
+        class: Gedmo\SoftDeleteable\SoftDeleteableListener
+        tags:
+            - { name: doctrine.event_listener, event: 'onFlush' }
+            - { name: doctrine.event_listener, event: 'loadClassMetadata' }
+        calls:
+            - [ setAnnotationReader, [ "@gedmo.mapping.driver.attribute" ] ]
+
+    gedmo.listener.timestampable:
+        class: Gedmo\Timestampable\TimestampableListener
+        tags:
+            - { name: doctrine.event_listener, event: 'prePersist' }
+            - { name: doctrine.event_listener, event: 'onFlush' }
+            - { name: doctrine.event_listener, event: 'loadClassMetadata' }
+        calls:
+            - [ setAnnotationReader, [ "@gedmo.mapping.driver.attribute" ] ]
+            - [ setClock, [ '@clock' ] ]
+
+    App\Infrastructure\Listener\EnumListener:
+        tags:
+            - { name: doctrine.event_listener, event: !php/const \Doctrine\ORM\Tools\ToolEvents::postGenerateSchema }
+
+    App\Infrastructure\Listener\SchemaAlterTableChangeColumnListener:
+        tags:
+            - { name: doctrine.event_listener, event: !php/const \Doctrine\DBAL\Events::onSchemaAlterTableChangeColumn }
+
+    App\Infrastructure\Serializer\TransportSerializer: ~
+

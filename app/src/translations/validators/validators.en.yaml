@@ -1,0 +1,17 @@
+entity.not.exist: The entity "{{ value }}" is not exist
+entity.exist: The entity "{{ value }}" is exist
+entity:
+  date_range:
+    invalid: The date range is invalid
+
+dto:
+  date:
+    date_less_than_current: The date must be less than current
+  date_range:
+    start_date: The start date should be greater than current date
+    end_date: The end date should be greater than start date
+    wrong_constraint: Wrong constraint
+    wrong_value: Wrong value
+    missed_entity_option: Missed entity option
+    invalid_start_date: Invalid start date
+    invalid_end_date: Invalid end date

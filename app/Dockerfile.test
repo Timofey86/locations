@@ -1,0 +1,21 @@
+FROM php:8.3-fpm-alpine
+
+ENV APP_ENV=test
+
+WORKDIR /app
+
+RUN apk add --no-cache bash git unzip zip libzip-dev libpng-dev libjpeg-turbo-dev freetype-dev libssh2 libssh2-dev supervisor \
+    && docker-php-ext-install pdo_pgsql gd zip \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && pecl install xdebug amqp ssh2 \
+    && docker-php-ext-enable xdebug amqp ssh2
+
+COPY ./app/src ./src
+COPY ./app/config/php/test/xdebug.ini /usr/local/etc/php/conf.d/
+COPY ./app/config/supervisor/php-fpm.conf /etc/supervisor/conf.d/
+COPY ./docs /opt/docs
+
+# Composer
+COPY composer.json composer.lock ./
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer \
+    && composer install --optimize-autoloader --prefer-dist --no-interaction

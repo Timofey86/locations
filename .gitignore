@@ -1,0 +1,19 @@
+# phpstorm project files
+.idea
+
+# Mac DS_Store Files
+.DS_Store
+
+# Local settings
+.env.local
+
+# Local data
+data
+app.log
+
+# Test output
+phpunit-report.xml
+phpunit-coverage.xml
+
+app/src/supervisord.log
+app/src/supervisord.pid

@@ -1,0 +1,44 @@
+server {
+    listen ${NGINX_PORT};
+    server_name ${NGINX_HOST};
+
+    root /var/www/html/public;
+
+    location / {
+
+        # CORS: Preflight request
+
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'POST, GET, DELETE, PATCH, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Authorization, Accept-Language, DNT, X-CustomHeader, Keep-Alive, User-Agent, X-Requested-With, If-Modified-Since, Cache-Control, Content-Type, Content-Range, Range';
+            add_header 'Access-Control-Max-Age' '1728000';
+            add_header 'Content-Type' 'text/plain; charset=UTF-8';
+            return 204;
+        }
+
+        try_files $uri /index.php$is_args$args;
+    }
+
+    location ~ ^/index\.php(/|$) {
+
+        # CORS
+
+        add_header 'Access-Control-Allow-Origin' * always;
+        add_header 'Access-Control-Expose-Headers' 'Content-Disposition' always;
+
+        fastcgi_pass ${NGINX_PASS};
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT $realpath_root;
+        fastcgi_buffer_size 128k;
+        fastcgi_buffers 4 256k;
+        fastcgi_busy_buffers_size 256k;
+        internal;
+    }
+
+    location ~ \.php$ {
+        return 404;
+    }
+}
