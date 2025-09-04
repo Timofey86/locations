@@ -50,11 +50,11 @@ abstract class RestController extends BaseController
     protected string $deleteCommandClass;
 
     protected array $allowedRoutes = [
-        'post' => true,
-        'list' => true,
-        'index' => true,
-        'get' => true,
-        'delete' => true,
+        'post' => false,
+        'list' => false,
+        'index' => false,
+        'get' => false,
+        'delete' => false,
     ];
 
     public function __construct(
