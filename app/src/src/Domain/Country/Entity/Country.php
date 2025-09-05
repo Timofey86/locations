@@ -36,10 +36,10 @@ class Country extends Entity
     private string $capital;
 
     #[ORM\Column(type: 'integer', nullable: false)]
-    private string $population;
+    private int $population;
 
     #[ORM\Column(type: 'integer', nullable: false)]
-    private string $phoneCode;
+    private int $phoneCode;
 
     #[ORM\ManyToOne(targetEntity: MacroRegion::class, inversedBy: 'countries')]
     #[ORM\JoinColumn(name: 'macro_region_id', referencedColumnName: 'id', nullable: false)]
@@ -102,30 +102,29 @@ class Country extends Entity
         return $this;
     }
 
-    public function getPopulation(): string
+    public function getPopulation(): int
     {
         return $this->population;
     }
 
-    public function setPopulation(string $population): static
+    public function setPopulation(int $population): static
     {
         $this->population = $population;
 
         return $this;
     }
 
-    public function getPhoneCode(): string
+    public function getPhoneCode(): int
     {
         return $this->phoneCode;
     }
 
-    public function setPhoneCode(string $phoneCode): static
+    public function setPhoneCode(int $phoneCode): static
     {
         $this->phoneCode = $phoneCode;
 
         return $this;
     }
-
 
     public function getMacroRegion(): MacroRegion
     {
@@ -173,8 +172,8 @@ class Country extends Entity
         string $iso,
         string $name,
         string $capital,
-        string $population,
-        string $phoneCode,
+        int $population,
+        int $phoneCode,
         MacroRegion $macroRegion,
     ): self {
         $self = new self();
