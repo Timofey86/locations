@@ -2,38 +2,46 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\MacroRegion\Infrastructure\Normalizer;
+namespace App\Domain\Country\Infrastructure\Normalizer;
 
-use App\Domain\MacroRegion\Entity\MacroRegion;
+use App\Domain\Country\Entity\Country;
 use ArrayObject;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-final readonly class MacroRegionNormalizer implements NormalizerInterface
+final readonly class CountryNormalizer implements NormalizerInterface
 {
     public function normalize(mixed $object, ?string $format = null, array $context = []): array|string|int|float|bool|ArrayObject|null
     {
-        /** @var MacroRegion $object */
+        /** @var Country $object */
 
         $data = [];
 
         $data['id'] = $object->getId()->toString();
         $data['name'] = $object->getName();
-        $data['code'] = $object->getCode();
+        $data['iso'] = $object->getIso();
+        $data['capital'] = $object->getCapital();
+        $data['population'] = $object->getPopulation();
+        $data['phoneCode'] = $object->getPhoneCode();
         $data['sorting'] = $object->getSorting();
         $data['geonameId'] = $object->getGeonameId();
+
+        $macroRegion = $object->getMacroRegion();
+        $data['macroRegion'] = [];
+        $data['macroRegion']['id'] = $macroRegion->getId()->toString();
+        $data['macroRegion']['name'] = $macroRegion->getName();
 
         return $data;
     }
 
     public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
     {
-        return $data instanceof MacroRegion;
+        return $data instanceof Country;
     }
 
     public function getSupportedTypes(?string $format): array
     {
         return [
-            MacroRegion::class => true
+            Country::class => true
         ];
     }
 }

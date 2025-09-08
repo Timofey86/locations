@@ -10,7 +10,6 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 final readonly class MacroRegionListNormalizer implements NormalizerInterface
 {
-
     public function normalize(mixed $object, ?string $format = null, array $context = []): array|string|int|float|bool|ArrayObject|null
     {
         $data = [];
