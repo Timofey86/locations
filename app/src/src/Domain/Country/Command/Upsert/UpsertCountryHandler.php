@@ -9,14 +9,18 @@ use App\Domain\Country\Infrastructure\Doctrine\Repository\CountryRepository;
 use App\Domain\MacroRegion\Infrastrucrure\Doctrine\Repository\MacroRegionRepository;
 use App\Domain\Shared\Command\CommandHandlerInterface;
 use App\Domain\Shared\Exception\CommandHandlerException;
+use App\Infrastructure\Queue\EventTrait;
+use Symfony\Component\Messenger\MessageBusInterface;
 
-class UpsertCountryHandler implements CommandHandlerInterface
+final class UpsertCountryHandler implements CommandHandlerInterface
 {
+    use EventTrait;
+
     public function __construct(
         protected CountryRepository $countryRepository,
         protected MacroRegionRepository $macroRegionRepository,
-    )
-    {
+        protected MessageBusInterface   $eventBus
+    ) {
     }
 
     public function __invoke(UpsertCountryCommand $command): void

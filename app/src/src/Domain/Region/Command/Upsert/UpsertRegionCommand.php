@@ -2,44 +2,35 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Country\Command\Upsert;
+namespace App\Domain\Region\Command\Upsert;
 
 use App\Domain\Shared\Command\AsyncCommandInterface;
 use App\Domain\Shared\Command\Command;
 use App\Helper\UuidHelper;
 use Ramsey\Uuid\UuidInterface;
 
-final class UpsertCountryCommand extends Command implements AsyncCommandInterface
+final class UpsertRegionCommand extends Command implements AsyncCommandInterface
 {
     public UuidInterface $id;
 
     public string $name;
 
-    public string $iso;
+    public string $code;
 
-    public UuidInterface $macroRegionId;
-
-    public string $capital;
-
-    public int $population;
-
-    public int $phoneCode;
+    public UuidInterface $countryId;
 
     public ?int $sorting = null;
 
     public ?int $geonameId = null;
 
-    public static function create(UpsertCountryDto $dto): self
+    public static function create(UpsertRegionDto $dto): self
     {
         $command = new self($dto);
 
         $command->id = ($dto->id === null) ? UuidHelper::create() : UuidHelper::create($dto->id);
         $command->name = $dto->name;
-        $command->iso = $dto->iso;
-        $command->macroRegionId = UuidHelper::create($dto->macroRegionId);
-        $command->capital = $dto->capital;
-        $command->population = $dto->population;
-        $command->phoneCode = $dto->phoneCode;
+        $command->code = $dto->code;
+        $command->countryId = UuidHelper::create($dto->countryId);
         $command->sorting = $dto->sorting;
         $command->geonameId = $dto->geonameId;
 

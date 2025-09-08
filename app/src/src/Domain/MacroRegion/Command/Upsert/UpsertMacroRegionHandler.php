@@ -7,13 +7,17 @@ namespace App\Domain\MacroRegion\Command\Upsert;
 use App\Domain\MacroRegion\Entity\MacroRegion;
 use App\Domain\MacroRegion\Infrastrucrure\Doctrine\Repository\MacroRegionRepository;
 use App\Domain\Shared\Command\CommandHandlerInterface;
+use App\Infrastructure\Queue\EventTrait;
+use Symfony\Component\Messenger\MessageBusInterface;
 
-class UpsertMacroRegionHandler implements CommandHandlerInterface
+final class UpsertMacroRegionHandler implements CommandHandlerInterface
 {
+    use EventTrait;
+
     public function __construct(
-        protected MacroRegionRepository $macroRegionRepository
-    )
-    {
+        protected MacroRegionRepository $macroRegionRepository,
+        protected MessageBusInterface   $messageBus
+    ) {
     }
 
     public function __invoke(UpsertMacroRegionCommand $command): void

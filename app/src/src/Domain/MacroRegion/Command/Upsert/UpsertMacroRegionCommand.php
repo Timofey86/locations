@@ -9,7 +9,7 @@ use App\Domain\Shared\Command\Command;
 use App\Helper\UuidHelper;
 use Ramsey\Uuid\UuidInterface;
 
-class UpsertMacroRegionCommand extends Command implements AsyncCommandInterface
+final class UpsertMacroRegionCommand extends Command implements AsyncCommandInterface
 {
     public UuidInterface $id;
 

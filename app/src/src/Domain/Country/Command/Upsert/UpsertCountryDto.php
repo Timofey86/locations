@@ -11,7 +11,7 @@ use App\Validator\EntityExists\EntityExists;
 use App\Validator\UniqueEntity\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class UpsertCountryDto extends Dto
+final class UpsertCountryDto extends Dto
 {
     #[Assert\Type('string')]
     public ?string $id = null;
