@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\MacroRegion\Infrastrucrure\Doctrine\Repository;
+namespace App\Domain\MacroRegion\Infrastructure\Doctrine\Repository;
 
 use App\Domain\MacroRegion\Entity\MacroRegion;
 use App\Infrastructure\Doctrine\Repository\Repository;

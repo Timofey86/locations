@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\MacroRegion\Infrastrucrure\Filter;
+namespace App\Domain\MacroRegion\Infrastructure\Filter;
 
 use App\Infrastructure\Filter\Filter;
 use Doctrine\ORM\QueryBuilder;
