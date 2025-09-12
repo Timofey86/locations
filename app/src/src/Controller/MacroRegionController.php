@@ -34,7 +34,7 @@ final class MacroRegionController extends RestController
     protected array $allowedRoutes = [
         'post' => true,
         'list' => true,
-        'index' => false,
+        'index' => true,
         'get' => true,
         'delete' => false,
     ];

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\MacroRegion\Entity;
 
 use App\Domain\Country\Entity\Country;
-use App\Domain\MacroRegion\Infrastrucrure\Doctrine\Repository\MacroRegionRepository;
+use App\Domain\MacroRegion\Infrastructure\Doctrine\Repository\MacroRegionRepository;
 use App\Domain\Shared\Entity\Entity;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;

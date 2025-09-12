@@ -15,7 +15,9 @@ use App\Domain\Country\Infrastructure\Filter\CountryListFilter;
 use App\Domain\Country\Infrastructure\Normalizer\CountryListNormalizer;
 use App\Domain\Country\Infrastructure\Normalizer\CountryNormalizer;
 use App\Infrastructure\Normalizer\PaginationNormalizer;
+use Symfony\Component\Routing\Attribute\Route;
 
+#[Route('/countries')]
 final class CountryController extends RestController
 {
     protected string $entityClass = Country::class;
@@ -43,7 +45,7 @@ final class CountryController extends RestController
     protected array $allowedRoutes = [
         'post' => true,
         'list' => true,
-        'index' => false,
+        'index' => true,
         'get' => true,
         'delete' => true,
     ];
