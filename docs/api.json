@@ -6,7 +6,7 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/macro-region": {
+    "/macro-regions": {
       "get": {
         "summary": "Macroregions items",
         "description": "Get macroregions items",
@@ -101,7 +101,7 @@
         }
       }
     },
-    "/macro-region/{id}": {
+    "/macro-regions/{id}": {
       "get": {
         "summary": "Get Macroregion",
         "description": "Get Macroregion by Id",
@@ -145,7 +145,7 @@
         }
       }
     },
-    "/macro-region/list": {
+    "/macro-regions/list": {
       "get": {
         "summary": "Macroregions list",
         "description": "Get macroregions list",

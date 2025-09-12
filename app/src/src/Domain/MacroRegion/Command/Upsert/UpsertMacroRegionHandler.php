@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\MacroRegion\Command\Upsert;
 
 use App\Domain\MacroRegion\Entity\MacroRegion;
-use App\Domain\MacroRegion\Infrastrucrure\Doctrine\Repository\MacroRegionRepository;
+use App\Domain\MacroRegion\Infrastructure\Doctrine\Repository\MacroRegionRepository;
 use App\Domain\Shared\Command\CommandHandlerInterface;
 use App\Infrastructure\Queue\EventTrait;
 use Symfony\Component\Messenger\MessageBusInterface;

@@ -10,5 +10,5 @@ use App\Infrastructure\Doctrine\Repository\Repository;
 class MacroRegionRepository extends Repository
 {
     protected string $entityClass = MacroRegion::class;
-    protected string $alias = 'macro_region';
+    protected string $alias = 'macroRegion';
 }
