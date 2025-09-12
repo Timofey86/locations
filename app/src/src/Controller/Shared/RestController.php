@@ -185,7 +185,7 @@ abstract class RestController extends BaseController
     }
 
     #[Route('/{id}', methods: ['GET'])]
-    public function get(int|string $id): Response
+    public function get(string $id): Response
     {
         if (false === $this->isRouteAllowed('get')) {
             return new JsonResponse(['message' => 'Route not allowed'], Response::HTTP_BAD_REQUEST);

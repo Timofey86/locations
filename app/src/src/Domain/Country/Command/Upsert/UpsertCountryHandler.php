@@ -6,7 +6,7 @@ namespace App\Domain\Country\Command\Upsert;
 
 use App\Domain\Country\Entity\Country;
 use App\Domain\Country\Infrastructure\Doctrine\Repository\CountryRepository;
-use App\Domain\MacroRegion\Infrastrucrure\Doctrine\Repository\MacroRegionRepository;
+use App\Domain\MacroRegion\Infrastructure\Doctrine\Repository\MacroRegionRepository;
 use App\Domain\Shared\Command\CommandHandlerInterface;
 use App\Domain\Shared\Exception\CommandHandlerException;
 use App\Infrastructure\Queue\EventTrait;

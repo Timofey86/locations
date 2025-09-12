@@ -15,7 +15,9 @@ use App\Domain\Region\Infrastructure\Filter\RegionListFilter;
 use App\Domain\Region\Infrastructure\Normalizer\RegionListNormalizer;
 use App\Domain\Region\Infrastructure\Normalizer\RegionNormalizer;
 use App\Infrastructure\Normalizer\PaginationNormalizer;
+use Symfony\Component\Routing\Attribute\Route;
 
+#[Route('/regions')]
 final class RegionController extends RestController
 {
     protected string $entityClass = Region::class;
@@ -43,7 +45,7 @@ final class RegionController extends RestController
     protected array $allowedRoutes = [
         'post' => true,
         'list' => true,
-        'index' => false,
+        'index' => true,
         'get' => true,
         'delete' => true,
     ];
