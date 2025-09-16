@@ -326,7 +326,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Country"
+                  "type": "object",
+                  "properties": {
+                    "item": {
+                      "$ref": "#/components/schemas/Country"
+                    }
+                  },
+                  "required": ["item"]
                 }
               }
             }
@@ -410,12 +416,9 @@
                       "items": {
                         "$ref": "#/components/schemas/ListItem"
                       }
-                    },
-                    "pagination": {
-                      "$ref": "#/components/schemas/Pagination"
                     }
                   },
-                  "required": ["items", "pagination"]
+                  "required": ["items"]
                 }
               }
             }
@@ -746,12 +749,14 @@
           "sorting": {
             "type": "integer",
             "example": 100,
-            "description": "Sorting position"
+            "description": "Sorting position",
+            "nullable": true
           },
           "geonameId": {
             "type": "integer",
             "example": 1222456,
-            "description": "Id from resource"
+            "description": "Id from resource",
+            "nullable": true
           }
         },
         "type": "object",
