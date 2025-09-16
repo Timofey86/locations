@@ -128,7 +128,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MacroRegion"
+                  "type": "object",
+                  "properties": {
+                    "item": {
+                      "$ref": "#/components/schemas/MacroRegion"
+                    }
+                  },
+                  "required": ["item"]
                 }
               }
             }
@@ -685,12 +691,14 @@
           "sorting": {
             "type": "integer",
             "example": 100,
-            "description": "Sorting position"
+            "description": "Sorting position",
+            "nullable": true
           },
           "geonameId": {
             "type": "integer",
             "example": 6255148,
-            "description": "Id from resource"
+            "description": "Id from resource",
+            "nullable": true
           }
         },
         "type": "object",

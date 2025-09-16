@@ -12,6 +12,7 @@ use App\Domain\MacroRegion\Infrastructure\Filter\MacroRegionFilter;
 use App\Domain\MacroRegion\Infrastructure\Filter\MacroRegionListFilter;
 use App\Domain\MacroRegion\Infrastructure\Normalizer\MacroRegionListNormalizer;
 use App\Domain\MacroRegion\Infrastructure\Normalizer\MacroRegionNormalizer;
+use App\Infrastructure\Normalizer\PaginationNormalizer;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/macro-regions')]
@@ -24,6 +25,10 @@ final class MacroRegionController extends RestController
     protected ?string $listFilterClass = MacroRegionListFilter::class;
 
     protected string $normalizerClass = MacroRegionNormalizer::class;
+
+    protected bool $usePagination = true;
+
+    protected ?string $paginationNormalizerClass = PaginationNormalizer::class;
 
     protected ?string $listNormalizerClass = MacroRegionListNormalizer::class;
 
