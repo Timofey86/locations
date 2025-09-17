@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Region\Infrastructure\Doctrine\Repository;
+namespace App\Infrastructure\Doctrine\Repository;
 
 use App\Infrastructure\Filter\FilterInterface;
 use App\Infrastructure\Pagination\Pagination;

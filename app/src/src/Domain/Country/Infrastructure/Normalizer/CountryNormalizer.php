@@ -30,6 +30,8 @@ final readonly class CountryNormalizer implements NormalizerInterface
         $data['macroRegion']['id'] = $macroRegion->getId()->toString();
         $data['macroRegion']['name'] = $macroRegion->getName();
 
+        $data['macroRegionId'] = $macroRegion->getId()->toString();
+
         return $data;
     }
 

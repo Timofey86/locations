@@ -556,7 +556,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Region"
+                  "type": "object",
+                  "properties": {
+                    "item": {
+                      "$ref": "#/components/schemas/Region"
+                    }
+                  },
+                  "required": ["item"]
                 }
               }
             }
@@ -640,12 +646,9 @@
                       "items": {
                         "$ref": "#/components/schemas/ListItem"
                       }
-                    },
-                    "pagination": {
-                      "$ref": "#/components/schemas/Pagination"
                     }
                   },
-                  "required": ["items", "pagination"]
+                  "required": ["items"]
                 }
               }
             }
@@ -761,7 +764,32 @@
         },
         "type": "object",
         "required": [
-          "iso", "name", "capital", "population", "phoneCode"
+          "iso", "name", "capital", "population", "phoneCode", "macroRegionId"
+        ]
+      },
+      "CountryWithMacroRegion": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Country"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "macroRegion": {
+                "type": "object",
+                "required": ["id", "name"],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "UUID"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
         ]
       },
       "Region": {
@@ -779,7 +807,7 @@
             "type": "string",
             "example": "AE.02"
           },
-          "regionId": {
+          "countryId": {
             "type": "string",
             "example": "22a2e2a2-7e24-4414-9b58-dec997ee16dc",
             "description": "Region country"
@@ -787,16 +815,43 @@
           "sorting": {
             "type": "integer",
             "example": 100,
-            "description": "Sorting position"
+            "description": "Sorting position",
+            "nullable": true
           },
           "geonameId": {
             "type": "integer",
             "example": 6255148,
-            "description": "Id from resource"
+            "description": "Id from resource",
+            "nullable": true
           }
         },
         "type": "object",
-        "required": ["name", "code"]
+        "required": ["name", "code", "countryId"]
+      },
+      "RegionWithCountry": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Region"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "country": {
+                "type": "object",
+                "required": ["id", "name"],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "UUID"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ]
       },
       "ListItem": {
         "properties": {

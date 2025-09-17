@@ -25,6 +25,8 @@ final readonly class RegionNormalizer implements NormalizerInterface
         $data['country']['id'] = $country->getId()->toString();
         $data['country']['name'] = $country->getName();
 
+        $data['countryId'] = $country->getId()->toString();
+
         return $data;
     }
 
