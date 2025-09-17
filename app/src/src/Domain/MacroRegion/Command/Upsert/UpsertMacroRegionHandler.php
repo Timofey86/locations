@@ -26,9 +26,9 @@ final class UpsertMacroRegionHandler implements CommandHandlerInterface
 
         if (null === $macroRegion) {
             $macroRegion = MacroRegion::create(
-                $command->id,
-                $command->name,
-                $command->code
+                id: $command->id,
+                code: $command->code,
+                name: $command->name
             );
         } else {
             $macroRegion->setName($command->name);
