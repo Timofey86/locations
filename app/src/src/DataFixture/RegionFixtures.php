@@ -14,7 +14,7 @@ final class RegionFixtures extends Fixture
         'name' => 'Bayern_',
         'code' => 'BAYERN',
         'countryId' => CountryFixtures::COUNTRY_GERMANY,
-        'options' => [
+        '_options' => [
             'id' => 'cb17d07c-f5d7-42ca-b911-ce9fee917c46'
         ]
     ];
@@ -24,7 +24,7 @@ final class RegionFixtures extends Fixture
         'name' => 'Scotland_',
         'code' => 'SCOTLAND',
         'countryId' => CountryFixtures::COUNTRY_ENGLAND,
-        'options' => [
+        '_options' => [
             'id' => '4e06652a-aff6-49ac-846c-d3ea2701a72f'
         ]
     ];
