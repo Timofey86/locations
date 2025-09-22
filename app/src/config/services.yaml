@@ -21,6 +21,7 @@ parameters:
     mnp_user: '%env(MNP_USER)%'
     mnp_pass: '%env(MNP_PASS)%'
 
+
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -98,4 +99,13 @@ services:
             - { name: doctrine.event_listener, event: !php/const \Doctrine\DBAL\Events::onSchemaAlterTableChangeColumn }
 
     App\Infrastructure\Serializer\TransportSerializer: ~
+
+    App\Domain\Shared\Notifier: '@App\Infrastructure\Service\Notifier\TelegramNotifier'
+
+    Symfony\Contracts\HttpClient\HttpClientInterface: '@http_client'
+
+    App\Infrastructure\Service\Notifier\TelegramNotifier:
+        arguments:
+            $botToken: '%env(TELEGRAM_BOT_TOKEN)%'
+            $chatId: '%env(TELEGRAM_CHAT_ID)%'
 
