@@ -23,4 +23,14 @@ class CountryRepository extends Repository
     {
         $this->getEntityManager()->getConnection()->executeStatement("TRUNCATE country RESTART IDENTITY CASCADE");
     }
+
+    public function getIsoToIdMap(): array
+    {
+        $countries = $this->createQueryBuilder('c')
+            ->select('c.iso, c.id')
+            ->getQuery()
+            ->getArrayResult();
+
+        return array_column($countries, 'id', 'iso');
+    }
 }

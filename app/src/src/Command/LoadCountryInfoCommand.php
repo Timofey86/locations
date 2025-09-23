@@ -29,7 +29,7 @@ final class LoadCountryInfoCommand extends Command
         protected CountryRepository $countryRepository,
         protected MacroRegionRepository $macroRegionRepository,
         protected NotifierInterface $notifier,
-    ){
+    ) {
         parent::__construct();
     }
 
@@ -42,6 +42,7 @@ final class LoadCountryInfoCommand extends Command
         if (!$filePath) {
             $this->logger->error('Error downloading country info');
             $io->error('Error downloading country info');
+            $this->notifier->notify('Error downloading country info');
             return Command::FAILURE;
         }
 
@@ -59,6 +60,7 @@ final class LoadCountryInfoCommand extends Command
             if (false === ($handle = fopen($filePath, 'r'))) {
                 $io->error("Cannot open file: $filePath");
                 $this->logger->error("Cannot open file: $filePath");
+                $this->notifier->notify("Cannot open file: $filePath");
                 return;
             }
 
@@ -75,6 +77,7 @@ final class LoadCountryInfoCommand extends Command
                 $columns = explode("\t", trim($line));
                 if (count($columns) < 15) {
                     $this->logger->warning("Line $lineNumber skipped: not enough columns");
+                    $this->notifier->notify("Line $lineNumber skipped: not enough columns");
                     continue;
                 }
 
@@ -88,6 +91,7 @@ final class LoadCountryInfoCommand extends Command
                 if (!$macroRegion) {
                     $io->error("Macro Region not found: $continent");
                     $this->logger->warning("MacroRegion not found for continent $continent");
+                    $this->notifier->notify("MacroRegion not found for continent $continent");
                 }
 
                 $country = Country::create(
@@ -100,12 +104,17 @@ final class LoadCountryInfoCommand extends Command
                     macroRegion:  $macroRegion,
                 );
 
+                $country->setGeonameId((int)$geonameId);
+
                 $this->entityManager->persist($country);
                 $count++;
 
             }
 
             fclose($handle);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
             $this->entityManager->flush();
             $io->info("Saved $count country infos");
             $this->notifier->notify("Result console command: load-country-info - Uploaded $count countries");

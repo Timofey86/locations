@@ -14,7 +14,8 @@ final class TelegramNotifier implements NotifierInterface
         protected HttpClientInterface $httpClient,
         protected string $botToken,
         protected string $chatId,
-    ) {}
+    ) {
+    }
 
     /**
      * @throws TransportExceptionInterface

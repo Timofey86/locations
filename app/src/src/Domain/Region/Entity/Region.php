@@ -15,6 +15,7 @@ use Ramsey\Uuid\UuidInterface;
 
 #[ORM\Entity(repositoryClass: RegionRepository::class)]
 #[Gedmo\SoftDeleteable]
+#[ORM\UniqueConstraint(name: 'uniq_region_country_name', columns: ['country_id', 'name'])]
 class Region extends Entity
 {
     use TimestampableEntity;
@@ -27,7 +28,7 @@ class Region extends Entity
     #[ORM\Column(length: 255, nullable: false)]
     private string $code;
 
-    #[ORM\Column(length: 255, unique: true, nullable: false)]
+    #[ORM\Column(length: 255, nullable: false)]
     private string $name;
 
     #[ORM\ManyToOne(targetEntity: Country::class, inversedBy: "regions")]
