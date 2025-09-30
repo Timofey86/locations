@@ -37,11 +37,20 @@ A Symfony 7 project for managing locations, using Docker, RabbitMQ, and asynchro
     ```bash
     make composer
     ```
+4. Create database:
+    ```bash
+    make database
+    ```
 
-3. Start the containers:
+5. Start the containers:
     ```bash
     make start
     ```
+   
+6. Fill DB with data:
+    ```bash
+   make parse 
+   ```
 
 ## JWT Authentication
 
@@ -50,7 +59,10 @@ A Symfony 7 project for managing locations, using Docker, RabbitMQ, and asynchro
     - `public.pem` — public key
 - Tokens are valid for 1 hour, after which a new token must be obtained or refreshed.
 
-
+### Generate JWT Keys:
+```bash
+    make jwt
+```
 ## Notes
 
 - All dependencies are installed via Composer; PHP >= 8.4 is required.
