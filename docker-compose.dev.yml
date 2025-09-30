@@ -9,7 +9,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
-      - app_data:/var/www/html/var
+      - var_data:/var/www/html/var
       - ./app/src:/var/www/html
       - ./docs:/opt/docs
       - ./app/config/php/dev/xdebug.ini:/usr/local/etc/php/conf.d/99-xdebug.ini
@@ -78,7 +78,7 @@ services:
       RABBITMQ_DEFAULT_USER: $RABBITMQ_DEFAULT_USER
       RABBITMQ_DEFAULT_PASS: $RABBITMQ_DEFAULT_PASS
     volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
+      - ./data/rabbitmq:/var/lib/rabbitmq
     ports:
       - ${RABBITMQ_EXTERNAL_PORT:-5675}:5672
       - ${RABBITMQ_GUI_EXTERNAL_PORT:-15672}:15672
@@ -99,9 +99,8 @@ services:
       - locations
 
 volumes:
-  rabbitmq_data:
   postgres_data:
-  app_data:
+  var_data:
   redis_data:
 
 networks:

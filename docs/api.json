@@ -6,6 +6,99 @@
     "version": "1.0.0"
   },
   "paths": {
+    "/auth/login": {
+      "post": {
+        "summary": "Login user",
+        "description": "Authenticate a user and return a JWT token",
+        "tags": [
+          "auth"
+        ],
+        "operationId": "loginUser",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "User email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "User password"
+                  }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JWT token generated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "description": "JWT token for authentication"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          }
+        }
+      }
+    },
+    "/users": {
+      "post": {
+        "summary": "Register user",
+        "description": "Register user",
+        "tags": [
+          "user"
+        ],
+        "operationId": "postUser",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "401" : {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/AccessDenied"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          }
+        }
+      }
+    },
     "/macro-regions": {
       "get": {
         "summary": "Macroregions items",
@@ -677,6 +770,27 @@
           "example": "Human-readable error description with a dot."
         }
       },
+      "User": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User password"
+          },
+          "roles": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "User roles"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email", "password", "roles"
+        ]
+      },
       "MacroRegion": {
         "properties": {
           "id": {
@@ -977,6 +1091,24 @@
                   "type": "string",
                   "format": "UUID",
                   "example": "206de425-3298-4dab-b4c9-1e19bfae9ea6"
+                }
+              }
+            }
+          }
+        }
+      },
+      "BadRequest": {
+        "description": "Bad request, e.g., missing required fields or invalid data",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["message"],
+              "additionalProperties": false,
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Validation failed: email is required."
                 }
               }
             }
