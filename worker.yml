@@ -32,6 +32,7 @@ services:
       - "host.docker.internal:host-gateway"
     volumes:
       - ./app/src:/var/www/html
+      - var_data:/var/www/html/var
       - ./app/config/php/dev/xdebug.ini:/usr/local/etc/php/conf.d/99-xdebug.ini
       - ./app/config/supervisor/worker-failed.conf:/etc/supervisor/conf.d/worker-failed.conf
     environment:

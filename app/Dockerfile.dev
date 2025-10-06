@@ -35,4 +35,12 @@ RUN pecl install swoole-6.0.0 \
 # Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+# Supervisor
+COPY ./app/config/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
+COPY ./app/config/supervisor/worker.conf /etc/supervisor/conf.d/worker.conf
+
+RUN mkdir -p /var/log/supervisor
+
+CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]
+
 EXPOSE 9000

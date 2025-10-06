@@ -6,11 +6,10 @@ namespace App\Domain\User\Command\Register;
 
 use App\Domain\Shared\Command\AsyncCommandInterface;
 use App\Domain\Shared\Command\Command;
-use App\Domain\Shared\Command\SyncCommandInterface;
 use App\Helper\UuidHelper;
 use Ramsey\Uuid\UuidInterface;
 
-final class RegisterUserCommand extends Command implements SyncCommandInterface
+final class RegisterUserCommand extends Command implements AsyncCommandInterface
 {
     public UuidInterface $id;
 
