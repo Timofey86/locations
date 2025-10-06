@@ -115,6 +115,18 @@ final class CountryControllerOpenApiTest extends OpenApiTest
                 [],
                 $this->getHeaders(),
             ), [], 404),
+
+            OpenApiTestDto::create(RequestDto::create(
+                'GET',
+                '/countries',
+                [],
+                [],
+                [
+                    'HTTP_ACCEPT' => 'application/json',
+                    'CONTENT_TYPE' => 'application/json',
+                    'HTTP_AUTHORIZATION' => 'Bearer wrong-token',
+                ]
+            ), [], 401),
         ];
     }
 }

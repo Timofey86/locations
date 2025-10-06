@@ -84,8 +84,19 @@ final class MacroRegionControllerOpenApiTest extends OpenApiTest
                 [],
                 [],
                 $this->getHeaders()
-            ), [], 404)
+            ), [], 404),
 
+            OpenApiTestDto::create(RequestDto::create(
+                'GET',
+                '/macro-regions',
+                [],
+                [],
+                [
+                    'HTTP_ACCEPT' => 'application/json',
+                    'CONTENT_TYPE' => 'application/json',
+                    'HTTP_AUTHORIZATION' => 'Bearer wrong-token',
+                ]
+            ), [], 401),
         ];
     }
 }

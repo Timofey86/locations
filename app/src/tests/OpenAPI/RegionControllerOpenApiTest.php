@@ -133,6 +133,18 @@ final class RegionControllerOpenApiTest extends OpenApiTest
                 [],
                 $this->getHeaders(),
             ), [], 404),
+
+            OpenApiTestDto::create(RequestDto::create(
+                'GET',
+                '/regions',
+                [],
+                [],
+                [
+                    'HTTP_ACCEPT' => 'application/json',
+                    'CONTENT_TYPE' => 'application/json',
+                    'HTTP_AUTHORIZATION' => 'Bearer wrong-token',
+                ]
+            ), [], 401),
         ];
     }
 }

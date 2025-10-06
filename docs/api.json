@@ -1035,14 +1035,16 @@
           "application/json": {
             "schema": {
               "type": "object",
-              "required": [
-                "message"
-              ],
+              "required": ["message", "code"],
               "additionalProperties": false,
               "properties": {
                 "message": {
                   "type": "string",
                   "example": "Invalid Bearer token."
+                },
+                "code": {
+                  "type": "integer",
+                  "example": 401
                 }
               }
             }
