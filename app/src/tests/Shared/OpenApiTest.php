@@ -12,6 +12,8 @@ class OpenApiTest extends ApiTest
 {
     public const API_DOC = '/opt/docs/api.json';
 
+    private ?string $jwtToken = null;
+
     private function _testEndpoint(OpenApiTestDto $openApiTestDto): void
     {
         $validator = ValidatorBuilder::fromJsonFile(self::API_DOC)->getValidator();
@@ -53,5 +55,38 @@ class OpenApiTest extends ApiTest
     public function getOpenApiTests(): array
     {
         return [];
+    }
+
+    protected function getJwtToken(): string
+    {
+        if ($this->jwtToken === null) {
+
+            $this->client->request(
+                'POST',
+                '/auth/login',
+                [],
+                [],
+                ['CONTENT_TYPE' => 'application/json'],
+                json_encode([
+                    'email' => 'admin@example.com',
+                    'password' => 'Password123',
+                ])
+            );
+
+            $response = $this->client->getResponse();
+            $data = json_decode($response->getContent(), true);
+            $this->jwtToken = $data['token'];
+        }
+
+        return $this->jwtToken;
+    }
+
+    protected function getHeaders(): array
+    {
+        return [
+            'HTTP_ACCEPT' => 'application/json',
+            'CONTENT_TYPE' => 'application/json',
+            'HTTP_AUTHORIZATION' => 'Bearer ' . $this->getJwtToken(),
+        ];
     }
 }
