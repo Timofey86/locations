@@ -1,8 +1,8 @@
 # Locations Project
 
 [![Tests](https://github.com/Timofey86/locations/actions/workflows/tests.yml/badge.svg)](https://github.com/Timofey86/locations/actions/workflows/tests.yml)
-[![Rector](https://github.com/Timofey86/locations/actions/workflows/tests.yml/badge.svg?event=push)](https://github.com/Timofey86/locations/actions/workflows/tests.yml)
-[![PHP CS Fixer](https://github.com/Timofey86/locations/actions/workflows/tests.yml/badge.svg?event=push)](https://github.com/Timofey86/locations/actions/workflows/tests.yml)
+[![PHP CS Fixer](https://img.shields.io/badge/code_style-php_cs_fixer-blue.svg)](https://github.com/FriendsOfPHP/PHP-CS-Fixer)
+[![Rector](https://img.shields.io/badge/code_refactor-rector-green.svg)](https://github.com/rectorphp/rector)
 
 A Symfony 7 project for managing locations, using Docker, RabbitMQ, and asynchronous command handling via Messenger.
 
