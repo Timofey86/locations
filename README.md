@@ -1,5 +1,9 @@
 # Locations Project
 
+[![Tests](https://github.com/Timofey86/locations/actions/workflows/tests.yml/badge.svg)](https://github.com/Timofey86/locations/actions/workflows/tests.yml)
+[![Rector](https://github.com/Timofey86/locations/actions/workflows/tests.yml/badge.svg?event=push)](https://github.com/Timofey86/locations/actions/workflows/tests.yml)
+[![PHP CS Fixer](https://github.com/Timofey86/locations/actions/workflows/tests.yml/badge.svg?event=push)](https://github.com/Timofey86/locations/actions/workflows/tests.yml)
+
 A Symfony 7 project for managing locations, using Docker, RabbitMQ, and asynchronous command handling via Messenger.
 
 ## Project Structure

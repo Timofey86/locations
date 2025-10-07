@@ -3,13 +3,15 @@ services:
   app:
     build:
       dockerfile: app/Dockerfile.test
-    container_name: ${DOCKER_CONTAINER_PREFIX}_${PROJECT_NAME}_test_app
+    container_name: ${PROJECT_NAME}_test_app
     volumes:
       - var_data:/var/www/html/var
     environment:
       DATABASE_URL: ${DATABASE_URL}
       ASYNC_TRANSPORT_DSN: ${ASYNC_TRANSPORT_DSN}
       ASYNC_QUEUE: ${ASYNC_QUEUE}
+      BULK_TRANSPORT_DSN: ${BULK_TRANSPORT_DSN}
+      BULK_QUEUE: ${BULK_QUEUE}
       FAILED_TRANSPORT_DSN: ${FAILED_TRANSPORT_DSN}
       FAILED_QUEUE: ${FAILED_QUEUE}
       MEDIATOR_ASYNC_TRANSPORT_DSN: ${MEDIATOR_ASYNC_TRANSPORT_DSN}
@@ -21,7 +23,7 @@ services:
 
   postgres:
     image: postgres:${DOCKER_POSTGRES_VERSION:-16.2-alpine}
-    container_name: ${DOCKER_CONTAINER_PREFIX}_${PROJECT_NAME}_test_postgres
+    container_name: ${PROJECT_NAME}_test_postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:

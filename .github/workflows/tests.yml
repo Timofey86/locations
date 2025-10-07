@@ -1,0 +1,76 @@
+name: Run tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: symfony
+          POSTGRES_PASSWORD: symfony
+          POSTGRES_DB: symfony_test
+        options: >-
+          --health-cmd="pg_isready -U symfony" 
+          --health-interval=10s 
+          --health-timeout=5s 
+          --health-retries=5
+      rabbitmq:
+        image: rabbitmq:3-management
+        options: >-
+          --health-cmd="rabbitmqctl status" 
+          --health-interval=10s 
+          --health-timeout=5s 
+          --health-retries=5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Compose
+        run: docker compose -f docker-compose.test.yml build
+
+      - name: Start services
+        run: docker compose -f docker-compose.test.yml up -d
+
+      - name: Cache Composer
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies
+        run: docker compose -f docker-compose.test.yml exec -T app composer install --prefer-dist --no-interaction --optimize-autoloader --ignore-platform-req=ext-swoole
+
+      - name: Generate JWT keys
+        run: |
+          docker compose -f docker-compose.test.yml exec -T app bash -c "
+            mkdir -p config/jwt && \
+            openssl genpkey -out config/jwt/private.pem -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096 -pass pass:changeit && \
+            openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout -passin pass:changeit && \
+            chmod 644 config/jwt/private.pem config/jwt/public.pem
+          "  
+
+      - name: Run migrations
+        run: docker compose -f docker-compose.test.yml exec -T app php bin/console doctrine:migrations:migrate --no-interaction
+
+      - name: Run PHPUnit
+        run: docker compose -f docker-compose.test.yml exec -T app php bin/phpunit --coverage-text
+
+      - name: Run Rector
+        run: docker compose -f docker-compose.test.yml exec -T app vendor/bin/rector process --dry-run --no-diffs || true
+        continue-on-error: true
+
+      - name: Run PHP-CS-Fixer
+        run: docker compose -f docker-compose.test.yml exec -T -e PHP_CS_FIXER_IGNORE_ENV=1 app vendor/bin/php-cs-fixer fix --dry-run --diff || true
+        continue-on-error: true
+
+      - name: Stop and remove containers
+        run: docker compose -f docker-compose.test.yml down -v
